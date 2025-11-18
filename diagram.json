@@ -1,0 +1,67 @@
+{
+  "version": 1,
+  "author": "Anonymous maker",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-arduino-uno", "id": "uno", "top": 106.2, "left": -58.2, "attrs": {} },
+    { "type": "wokwi-ds1307", "id": "rtc1", "top": 340.2, "left": 211.3, "attrs": {} },
+    {
+      "type": "wokwi-lcd1602",
+      "id": "lcd1",
+      "top": 438.4,
+      "left": 197.6,
+      "attrs": { "pins": "i2c" }
+    },
+    {
+      "type": "wokwi-pushbutton-6mm",
+      "id": "btn2",
+      "top": 49.5,
+      "left": 148.5,
+      "rotate": 90,
+      "attrs": { "color": "green", "xray": "1" }
+    },
+    {
+      "type": "wokwi-pushbutton-6mm",
+      "id": "btn3",
+      "top": 49.5,
+      "left": 177.3,
+      "rotate": 90,
+      "attrs": { "color": "green", "xray": "1" }
+    },
+    {
+      "type": "wokwi-pushbutton-6mm",
+      "id": "btn4",
+      "top": 49.5,
+      "left": 206.1,
+      "rotate": 90,
+      "attrs": { "color": "green", "xray": "1" }
+    },
+    {
+      "type": "wokwi-pushbutton-6mm",
+      "id": "btn1",
+      "top": 49.5,
+      "left": 119.7,
+      "rotate": 90,
+      "attrs": { "color": "green", "xray": "1" }
+    }
+  ],
+  "connections": [
+    [ "rtc1:5V", "uno:5V", "red", [ "h0" ] ],
+    [ "rtc1:GND", "uno:GND.2", "black", [ "h0" ] ],
+    [ "uno:A4", "rtc1:SDA", "green", [ "v0" ] ],
+    [ "uno:A5", "rtc1:SCL", "green", [ "v0" ] ],
+    [ "lcd1:GND", "uno:GND.2", "black", [ "h0" ] ],
+    [ "lcd1:VCC", "uno:5V", "red", [ "h0" ] ],
+    [ "lcd1:SDA", "uno:A4", "green", [ "h0" ] ],
+    [ "lcd1:SCL", "uno:A5", "green", [ "h0" ] ],
+    [ "btn1:2.r", "uno:GND.1", "green", [ "v0.8", "h-58" ] ],
+    [ "btn1:1.r", "uno:6", "green", [ "v0" ] ],
+    [ "btn2:2.r", "uno:GND.1", "green", [ "v0.8", "h-96.4" ] ],
+    [ "btn2:1.r", "uno:5", "green", [ "v0" ] ],
+    [ "btn3:2.r", "uno:GND.1", "green", [ "v0.8", "h-125.2" ] ],
+    [ "btn3:1.r", "uno:4", "green", [ "v0" ] ],
+    [ "btn4:2.r", "uno:GND.1", "green", [ "v4.5", "h-159.1" ] ],
+    [ "btn4:1.r", "uno:3", "green", [ "v0" ] ]
+  ],
+  "dependencies": {}
+}
