@@ -17,6 +17,7 @@ RTC_DS1307 rtc;
 #define BACK_BTN 3
 
 void printWithLeadingZeros(int number, unsigned int totalDigits);
+void printWithBlinking(int number, unsigned int totalDigits, bool shouldBlink);
 void displayTime();
 void handleSetTime();
 void renderSetTimeScreen();
@@ -52,6 +53,12 @@ bool backPressed = false;
 // ---------- Display update frequency ----------
 const unsigned long DISPLAY_INTERVAL_MS = 20;
 unsigned long lastDisplayUpdate = 0;
+
+// ---------- Blinking control for set mode ----------
+const unsigned long BLINK_INTERVAL_MS = 500;
+unsigned long lastBlinkUpdate = 0;
+bool blinkState = true; // true = show field, false = hide field
+
 
 void setup() {
   Serial.begin(9600);
@@ -126,6 +133,12 @@ void loop() {
       break;
     default:
       break;
+  }
+
+  // Control blink state for set mode (non-blocking)
+  if (mode == 1 && (nowMs - lastBlinkUpdate >= BLINK_INTERVAL_MS)) {
+    lastBlinkUpdate = nowMs;
+    blinkState = !blinkState;
   }
 
   // Control screen update frequency (non-blocking)
@@ -265,18 +278,29 @@ void renderSetTimeScreen() {
 
   // Second line displays complete date and time
   lcd.setCursor(0, 1);
-  printWithLeadingZeros(setYear, 4);
+  printWithBlinking(setYear, 4, setFieldIndex == 0);
   lcd.print('/');
-  printWithLeadingZeros(setMonth, 2);
+  printWithBlinking(setMonth, 2, setFieldIndex == 1);
   lcd.print('/');
-  printWithLeadingZeros(setDay, 2);
+  printWithBlinking(setDay, 2, setFieldIndex == 2);
   lcd.print(' ');
-  printWithLeadingZeros(setHour, 2);
+  printWithBlinking(setHour, 2, setFieldIndex == 3);
   lcd.print(':');
-  printWithLeadingZeros(setMinute, 2);
+  printWithBlinking(setMinute, 2, setFieldIndex == 4);
 }
 
 // ------------------ Utility Functions ------------------
+void printWithBlinking(int number, unsigned int totalDigits, bool shouldBlink) {
+  if (shouldBlink && !blinkState) {
+    // Print spaces instead of numbers when blinking off
+    for (unsigned int i = 0; i < totalDigits; i++) {
+      lcd.print(" ");
+    }
+  } else {
+    printWithLeadingZeros(number, totalDigits);
+  }
+}
+
 void printWithLeadingZeros(int number, unsigned int totalDigits) {
   String numStr = String(number);
   while (numStr.length() < totalDigits) {
@@ -284,6 +308,8 @@ void printWithLeadingZeros(int number, unsigned int totalDigits) {
   }
   lcd.print(numStr);
 }
+
+
 
 int daysInMonth(int year, int month) {
   static const int days[] = { 31,28,31,30,31,30,31,31,30,31,30,31 };
